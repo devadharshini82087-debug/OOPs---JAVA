@@ -1,0 +1,101 @@
+import java.util.*;
+
+abstract class Shape {
+    int d1;
+    int d2;
+
+    Shape(int d1, int d2) {
+        this.d1 = d1;
+        this.d2 = d2;
+    }
+
+    abstract void printArea();
+}
+
+class Rectangle extends Shape {
+
+    Rectangle(int length, int breadth) {
+        super(length, breadth);
+    }
+
+    @Override
+    void printArea() {
+        int area = d1 * d2;
+        System.out.println("Area of Rectangle = " + area);
+    }
+}
+
+class Triangle extends Shape {
+
+    Triangle(int base, int height) {
+        super(base, height);
+    }
+
+    @Override
+    void printArea() {
+        double area = 0.5 * d1 * d2;
+        System.out.println("Area of Triangle = " + area);
+    }
+}
+
+class Circle extends Shape {
+
+    Circle(int radius) {
+        super(radius, 0);
+    }
+
+    @Override
+    void printArea() {
+        double area = Math.PI * d1 * d1;
+        System.out.printf("Area of Circle = %.2f%n", area);
+    }
+}
+
+public class Ex4 {
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("Enter Shape (Rectangle/Triangle/Circle):");
+        String shapeType = sc.next();
+
+        if (shapeType.equalsIgnoreCase("Rectangle")) {
+
+            System.out.print("Enter Length: ");
+            int length = sc.nextInt();
+
+            System.out.print("Enter Breadth: ");
+            int breadth = sc.nextInt();
+
+            Shape rect = new Rectangle(length, breadth);
+            rect.printArea();
+
+        } else if (shapeType.equalsIgnoreCase("Triangle")) {
+
+            System.out.print("Enter Base: ");
+            int base = sc.nextInt();
+
+            System.out.print("Enter Height: ");
+            int height = sc.nextInt();
+
+            Shape tri = new Triangle(base, height);
+            tri.printArea();
+
+        } else if (shapeType.equalsIgnoreCase("Circle")) {
+
+            System.out.print("Enter Radius: ");
+            int radius = sc.nextInt();
+
+            Shape circ = new Circle(radius);
+            circ.printArea();
+
+        } else {
+
+            System.out.println("Invalid Shape");
+
+        }
+
+        sc.close();
+    }
+}
