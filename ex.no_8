@@ -1,0 +1,103 @@
+import java.util.Random;
+
+class SharedData {
+    int number;
+    int count = 0;
+    boolean finished = false;
+
+    synchronized void generateNumber() {
+        Random r = new Random();
+
+        while (count < 10) {
+            number = r.nextInt(10) + 1;
+            count++;
+
+            System.out.println("Thread 1: Generated Number = " + number);
+
+            notifyAll();
+
+            try {
+                if (count < 10) {
+                    Thread.sleep(1000);
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                break;
+            }
+        }
+
+        finished = true;
+        notifyAll();
+    }
+
+    synchronized void calculateSquare() {
+        int last = 0;
+
+        while (true) {
+            try {
+                while (!finished &&
+                       (count == last || number % 2 != 0)) {
+                    wait();
+                }
+
+                if (finished && count == last) {
+                    break;
+                }
+
+                if (number % 2 == 0 && count != last) {
+                    System.out.println("Thread 2: Square of " + number +
+                                       " = " + (number * number));
+
+                    last = count;
+                }
+
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                break;
+            }
+        }
+    }
+
+    synchronized void calculateCube() {
+        int last = 0;
+
+        while (true) {
+            try {
+                while (!finished &&
+                       (count == last || number % 2 == 0)) {
+                    wait();
+                }
+
+                if (finished && count == last) {
+                    break;
+                }
+
+                if (number % 2 != 0 && count != last) {
+                    System.out.println("Thread 3: Cube of " + number +
+                                       " = " + (number * number * number));
+
+                    last = count;
+                }
+
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                break;
+            }
+        }
+    }
+}
+
+public class MultiThreadNumberProcessing {
+    public static void main(String[] args) {
+
+        SharedData data = new SharedData();
+
+        Thread t1 = new Thread(() -> data.generateNumber());
+        Thread t2 = new Thread(() -> data.calculateSquare());
+        Thread t3 = new Thread(() -> data.calculateCube());
+
+        t1.start();
+        t2.start();
+        t3.start();
+    }
+}
